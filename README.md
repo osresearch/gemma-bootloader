@@ -1,6 +1,11 @@
 ![HELEN board closeup](https://farm9.staticflickr.com/8627/16439762565_22579e7cba.jpg)
 
 This is forked from [Adafruit's bootloader](https://github.com/adafruit/Adafruit-Trinket-Gemma-Bootloader).
+The changes are:
+
+* Allow it to be built using the Arduino compiler.
+* Disable LED during booting, allowing USB D- to be reused as IO.
+* Disabling the reset pin, allowing one more IO pin (Not yet working).
 
 
 Adafruit-Trinket-Gemma-Bootloader

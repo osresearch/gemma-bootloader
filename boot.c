@@ -72,7 +72,7 @@ A magic byte at the bottom of the stack is checked to see where to jump when the
 //#define ENABLE_FUSE_READING
 #define ENABLE_CHIP_ERASE
 #define ENABLE_WRITE_WHEN_TOLD
-#define ENABLE_LED_BLINK
+#undef ENABLE_LED_BLINK // Disable blink to allow the USB D+ pin to be reused as IO
 #define ENABLE_RESTORE_OSCCAL
 
 // timeout settings

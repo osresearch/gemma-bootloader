@@ -61,7 +61,7 @@ OBJECTS_BOOT_LV = usbdrv/usbdrvasm_lv.o boot_lv.o osccal_lv.o
 OBJECTS_BOOT_HV = usbdrv/usbdrvasm_hv.o boot_hv.o osccal_hv.o
 
 # symbolic targets:
-all: flash_me_lv.hex flash_me_hv.hex
+all: flash_me_lv.hex # flash_me_hv.hex
 
 all_lv: flash_me_lv.hex
 
