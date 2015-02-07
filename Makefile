@@ -46,8 +46,9 @@ FUSEOPT_t85_NO_PLL = -U lfuse:w:0xE2:m $(FUSEOPT_t85)
 ###############################################################################
 
 # Tools:
-AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
-CC = avr-gcc
+AVR_PATH="/Applications/Adafruit Arduino 1.0.5.app/Contents/Resources/Java/hardware/tools/avr/bin/"
+AVRDUDE = $(AVR_PATH)avrdude $(PROGRAMMER) -p $(DEVICE)
+CC = $(AVR_PATH)avr-gcc
 
 # Options:
 DEFINES = 
@@ -114,47 +115,47 @@ clean:
 
 flash_me_lv.hex:	jump_lv.hex boot_lv.hex
 	cat jump_lv.hex boot_lv.hex > $@
-	avr-objdump -mavr -D $@ > $@.lss
+	$(AVR_PATH)avr-objdump -mavr -D $@ > $@.lss
 
 flash_me_hv.hex:	jump_hv.hex boot_hv.hex
 	cat jump_hv.hex boot_hv.hex > $@
-	avr-objdump -mavr -D $@ > $@.lss
+	$(AVR_PATH)avr-objdump -mavr -D $@ > $@.lss
 
 boot_lv.elf:	$(OBJECTS_BOOT_LV)
 	$(CC) $(CFLAGS) -DLOW_VOLTAGE -o $@ $(OBJECTS_BOOT_LV) $(LDFLAGS_BOOT) -Wl,--section-start=.text=$(BOOTLOADER_ADDRESS_LV)
-	avr-size --format=avr --mcu=$(DEVICE) $@
-	avr-objdump -x -D -S -z $@ > $@.lss
+	$(AVR_PATH)avr-size --format=avr --mcu=$(DEVICE) $@
+	$(AVR_PATH)avr-objdump -x -D -S -z $@ > $@.lss
 
 boot_hv.elf:	$(OBJECTS_BOOT_HV)
 	$(CC) $(CFLAGS) -o $@ $(OBJECTS_BOOT_HV) $(LDFLAGS_BOOT) -Wl,--section-start=.text=$(BOOTLOADER_ADDRESS_HV)
-	avr-size --format=avr --mcu=$(DEVICE) $@
-	avr-objdump -x -D -S -z $@ > $@.lss
+	$(AVR_PATH)avr-size --format=avr --mcu=$(DEVICE) $@
+	$(AVR_PATH)avr-objdump -x -D -S -z $@ > $@.lss
 
 jump_lv.elf:	jump.asm
-	avr-as -mmcu=$(DEVICE) --defsym BOOTLOADER_ADDRESS=0x$(BOOTLOADER_ADDRESS_LV) -o $@ $<
+	$(AVR_PATH)avr-as -mmcu=$(DEVICE) --defsym BOOTLOADER_ADDRESS=0x$(BOOTLOADER_ADDRESS_LV) -o $@ $<
 
 jump_hv.elf:	jump.asm
-	avr-as -mmcu=$(DEVICE) --defsym BOOTLOADER_ADDRESS=0x$(BOOTLOADER_ADDRESS_HV) -o $@ $<
+	$(AVR_PATH)avr-as -mmcu=$(DEVICE) --defsym BOOTLOADER_ADDRESS=0x$(BOOTLOADER_ADDRESS_HV) -o $@ $<
 
 boot_lv.hex:	boot_lv.elf
 	rm -f boot_lv.hex boot_lv.eep.hex
-	avr-objcopy -j .text -j .data -O ihex $< $@
-	avr-size $@
+	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@
+	$(AVR_PATH)avr-size $@
 
 boot_hv.hex:	boot_hv.elf
 	rm -f boot_hv.hex boot_hv.eep.hex
-	avr-objcopy -j .text -j .data -O ihex $< $@
-	avr-size $@
+	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@
+	$(AVR_PATH)avr-size $@
 
 jump_lv.hex:	jump_lv.elf
 	rm -f $@ $@.tmp jump_lv.eep.hex
-	avr-objcopy -j .text -j .data -O ihex $< $@.tmp
+	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@.tmp
 	head -1 $@.tmp > $@
 	rm -f $@.tmp
 
 jump_hv.hex:	jump_hv.elf
 	rm -f $@ $@.tmp jump_hv.eep.hex
-	avr-objcopy -j .text -j .data -O ihex $< $@.tmp
+	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@.tmp
 	head -1 $@.tmp > $@
 	rm -f $@.tmp
 
