@@ -23,14 +23,42 @@
 ; <http://www.gnu.org/licenses/>.
 
 .org 0x0000
-		rjmp BOOTLOADER_ADDRESS
-		rjmp BOOTLOADER_ADDRESS + 2
-		rjmp BOOTLOADER_ADDRESS + 4
-		rjmp BOOTLOADER_ADDRESS + 6
-		rjmp BOOTLOADER_ADDRESS + 8
-		rjmp BOOTLOADER_ADDRESS + 10
-		rjmp BOOTLOADER_ADDRESS + 12
-		rjmp BOOTLOADER_ADDRESS + 14
-		rjmp BOOTLOADER_ADDRESS + 16
-main:	cli
-		rjmp .-2
+		rjmp BOOTLOADER_ADDRESS		; 0x00
+		rjmp BOOTLOADER_ADDRESS + 2	; 0x02
+		rjmp BOOTLOADER_ADDRESS + 4	; 0x04
+		rjmp BOOTLOADER_ADDRESS + 6	; 0x06
+		rjmp BOOTLOADER_ADDRESS + 8	; 0x08
+		rjmp BOOTLOADER_ADDRESS + 10	; 0x0a
+		rjmp BOOTLOADER_ADDRESS + 12	; 0x0c
+		rjmp BOOTLOADER_ADDRESS + 14	; 0x0e
+		rjmp BOOTLOADER_ADDRESS + 16	; 0x10
+main:
+		cli				; 0x12
+		rjmp main			; 0x14
+		nop				; 0x16
+		nop				; 0x18
+		nop				; 0x1a
+		nop				; 0x1c
+		nop				; 0x1e
+		nop				; 0x16
+		nop				; 0x18
+		nop				; 0x1a
+		nop				; 0x1c
+		nop				; 0x1e
+
+		nop				; 0x20
+		nop				; 0x22
+		nop				; 0x24
+		nop				; 0x26
+		nop				; 0x28
+		nop				; 0x2a
+		nop				; 0x2c
+		nop				; 0x2e
+		nop				; 0x30
+		nop				; 0x32
+		nop				; 0x34
+		nop				; 0x36
+		nop				; 0x38
+		nop				; 0x3a
+		nop				; 0x3c
+		.byte 0xFF			; 0x3e

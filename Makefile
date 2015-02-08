@@ -33,7 +33,8 @@ DEVICE = attiny85
 # see table on the bottom of this makefile
 # Note: the compiler used was AVR-GCC 4.7.2 , other versions may change the bootloader size
 BOOTLOADER_ADDRESS_HV = 1500
-BOOTLOADER_ADDRESS_LV = 14C0
+#BOOTLOADER_ADDRESS_LV = 14C0
+BOOTLOADER_ADDRESS_LV = 1500
 
 PROGRAMMER = -c usbtiny -B 1
 # PROGRAMMER contains AVRDUDE options to address your programmer
@@ -46,7 +47,8 @@ FUSEOPT_t85_NO_PLL = -U lfuse:w:0xE2:m $(FUSEOPT_t85)
 ###############################################################################
 
 # Tools:
-AVR_PATH="/Applications/Adafruit Arduino 1.0.5.app/Contents/Resources/Java/hardware/tools/avr/bin/"
+#AVR_PATH="/Applications/Adafruit Arduino 1.0.5.app/Contents/Resources/Java/hardware/tools/avr/bin/"
+AVR_PATH=/Applications/Arduino-1.5.8//Contents/Java/hardware/tools/avr/bin/
 AVRDUDE = $(AVR_PATH)avrdude $(PROGRAMMER) -p $(DEVICE)
 CC = $(AVR_PATH)avr-gcc
 
@@ -61,7 +63,7 @@ OBJECTS_BOOT_LV = usbdrv/usbdrvasm_lv.o boot_lv.o osccal_lv.o
 OBJECTS_BOOT_HV = usbdrv/usbdrvasm_hv.o boot_hv.o osccal_hv.o
 
 # symbolic targets:
-all: flash_me_lv.hex # flash_me_hv.hex
+all: flash_me_lv.hex #flash_me_hv.hex
 
 all_lv: flash_me_lv.hex
 
@@ -117,6 +119,9 @@ flash_me_lv.hex:	jump_lv.hex boot_lv.hex
 	cat jump_lv.hex boot_lv.hex > $@
 	$(AVR_PATH)avr-objdump -mavr -D $@ > $@.lss
 
+%.txt: %.hex
+	perl -ne 's/[\r\n]//g; print qq{"$$_\\n"\n}' < $< > $@
+
 flash_me_hv.hex:	jump_hv.hex boot_hv.hex
 	cat jump_hv.hex boot_hv.hex > $@
 	$(AVR_PATH)avr-objdump -mavr -D $@ > $@.lss
@@ -139,7 +144,7 @@ jump_hv.elf:	jump.asm
 
 boot_lv.hex:	boot_lv.elf
 	rm -f boot_lv.hex boot_lv.eep.hex
-	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@
+	$(AVR_PATH)avr-objcopy --srec-len 32 -j .text -j .data -O ihex $< $@
 	$(AVR_PATH)avr-size $@
 
 boot_hv.hex:	boot_hv.elf
@@ -150,13 +155,13 @@ boot_hv.hex:	boot_hv.elf
 jump_lv.hex:	jump_lv.elf
 	rm -f $@ $@.tmp jump_lv.eep.hex
 	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@.tmp
-	head -1 $@.tmp > $@
+	head -4 $@.tmp > $@
 	rm -f $@.tmp
 
 jump_hv.hex:	jump_hv.elf
 	rm -f $@ $@.tmp jump_hv.eep.hex
 	$(AVR_PATH)avr-objcopy -j .text -j .data -O ihex $< $@.tmp
-	head -1 $@.tmp > $@
+	head -2 $@.tmp > $@
 	rm -f $@.tmp
 
 # program size lookup table
