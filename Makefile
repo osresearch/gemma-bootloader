@@ -36,10 +36,16 @@ BOOTLOADER_ADDRESS_HV = 1500
 #BOOTLOADER_ADDRESS_LV = 14C0
 BOOTLOADER_ADDRESS_LV = 1500
 
-PROGRAMMER = -c usbtiny -B 1
+#PROGRAMMER = -c usbtiny -B 1
+#PROGRAMMER = -c avrispmkII -B 100
+PROGRAMMER = -c stk500v1 -P/dev/ttyACM0 -B 1  # arduino as ISP
 # PROGRAMMER contains AVRDUDE options to address your programmer
 
-FUSEOPT_t85        = -U efuse:w:0xFE:m -U hfuse:w:0xD5:m
+# If RSTDSBL is selected you get ONE chance to program the device
+HIGH_FUSE_t85_RSTDISBL=0x55
+HIGH_FUSE_t85=0xD5
+FUSEOPT_t85        = -U efuse:w:0xFE:m -U hfuse:w:$(HIGH_FUSE_t85_RSTDISBL):m
+#FUSEOPT_t85        = -U efuse:w:0xFE:m -U hfuse:w:$(HIGH_FUSE_t85):m
 FUSEOPT_t85_PLL    = -U lfuse:w:0xF1:m $(FUSEOPT_t85)
 FUSEOPT_t85_NO_PLL = -U lfuse:w:0xE2:m $(FUSEOPT_t85)
 # You may have to change the order of these -U commands.
@@ -48,8 +54,13 @@ FUSEOPT_t85_NO_PLL = -U lfuse:w:0xE2:m $(FUSEOPT_t85)
 
 # Tools:
 #AVR_PATH="/Applications/Adafruit Arduino 1.0.5.app/Contents/Resources/Java/hardware/tools/avr/bin/"
-AVR_PATH=/Applications/Arduino-1.5.8//Contents/Java/hardware/tools/avr/bin/
-AVRDUDE = $(AVR_PATH)avrdude $(PROGRAMMER) -p $(DEVICE)
+#AVR_PATH=/Applications/Arduino-1.5.8//Contents/Java/hardware/tools/avr/bin/
+AVR_PATH=$(HOME)/bin/arduino-1.6.8/hardware/tools/avr/bin/
+AVRDUDE = $(AVR_PATH)avrdude \
+	$(PROGRAMMER) \
+	-p $(DEVICE) \
+	-C "$(AVR_PATH)/../../../arduino/avr/bootloaders/gemma/avrdude.conf" \
+
 CC = $(AVR_PATH)avr-gcc
 
 # Options:
